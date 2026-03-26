@@ -35,6 +35,45 @@ const demos = {
       '--wave-rotate': `${Math.max(4, intensity / 2.5)}deg`,
     }),
   },
+  magnet: {
+    name: 'Magnet',
+    description: '磁吸跟随感，适合按钮和悬浮物。',
+    css: (speed, intensity) => ({
+      animation: `magnet ${speed}s cubic-bezier(.22,1,.36,1) infinite`,
+      '--mx': `${Math.max(10, intensity)}px`,
+      '--my': `${Math.max(8, intensity * 0.65)}px`,
+    }),
+  },
+  blob: {
+    name: 'Blob Morph',
+    description: '液态变形，适合 hero 背景和徽章。',
+    css: (speed, intensity) => ({
+      animation: `blob ${speed}s ease-in-out infinite`,
+      '--blob-radius-a': `${42 + Math.floor(intensity / 2)}%`,
+      '--blob-radius-b': `${58 - Math.floor(intensity / 3)}%`,
+    }),
+  },
+  text: {
+    name: 'Text Reveal',
+    description: '文字逐字显现，适合标题展示。',
+    css: (speed) => ({
+      animation: `textReveal ${speed}s ease infinite`,
+    }),
+  },
+  stagger: {
+    name: 'Stagger Stack',
+    description: '层叠错峰进入，适合列表卡片。',
+    css: () => ({}),
+  },
+  parallax: {
+    name: 'Parallax',
+    description: '分层轻微位移，适合大卡片或 hero。',
+    css: (speed, intensity) => ({
+      '--px': `${Math.max(8, intensity)}px`,
+      '--py': `${Math.max(6, intensity * 0.5)}px`,
+      '--pspeed': `${speed}s`,
+    }),
+  },
 }
 
 const presets = [
@@ -65,6 +104,16 @@ function App() {
         return `.target {\n  animation: pulse ${speed}s ease-in-out infinite;\n  scale: var(--pulse-scale);\n}`
       case 'wave':
         return `.target {\n  animation: wave ${speed}s ease-in-out infinite;\n  rotate: var(--wave-rotate);\n}`
+      case 'magnet':
+        return `.target {\n  animation: magnet ${speed}s cubic-bezier(.22,1,.36,1) infinite;\n  transform: translate(var(--mx), var(--my));\n}`
+      case 'blob':
+        return `.target {\n  animation: blob ${speed}s ease-in-out infinite;\n  border-radius: var(--blob-radius-a) var(--blob-radius-b) var(--blob-radius-a) var(--blob-radius-b);\n}`
+      case 'text':
+        return `.title {\n  animation: textReveal ${speed}s ease infinite;\n  clip-path: inset(0 100% 0 0);\n}`
+      case 'stagger':
+        return `.item {\n  animation: riseIn .6s ease both;\n}\n.item:nth-child(2) { animation-delay: .08s; }\n.item:nth-child(3) { animation-delay: .16s; }`
+      case 'parallax':
+        return `.layer {\n  animation: drift var(--pspeed) ease-in-out infinite alternate;\n}\n.back { transform: translate(calc(var(--px) * -0.6), calc(var(--py) * -0.6)); }`
       default:
         return ''
     }
@@ -74,6 +123,51 @@ function App() {
     setSpeed(preset.speed)
     setIntensity(preset.intensity)
     setShape(preset.shape)
+  }
+
+  const renderPreview = () => {
+    if (demo === 'text') {
+      return (
+        <div className="text-preview" style={previewStyle}>
+          <p className="tiny-label">Headline motion</p>
+          <h3>Motion makes interfaces feel alive.</h3>
+        </div>
+      )
+    }
+
+    if (demo === 'stagger') {
+      return (
+        <div className="stagger-preview">
+          {[1, 2, 3, 4].map((item) => (
+            <div key={item} className="stagger-card">
+              <span />
+              <div>
+                <strong>Layer {item}</strong>
+                <small>Animated card item</small>
+              </div>
+            </div>
+          ))}
+        </div>
+      )
+    }
+
+    if (demo === 'parallax') {
+      return (
+        <div className="parallax-preview" style={previewStyle}>
+          <div className="parallax-layer back" />
+          <div className="parallax-layer middle" />
+          <div className="parallax-layer front">
+            <div className="parallax-chip">Depth</div>
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <div className={`preview-shape ${shape} ${demo === 'blob' ? 'blob-shape' : ''}`} style={previewStyle}>
+        <div className="inner-glow" />
+      </div>
+    )
   }
 
   return (
@@ -92,7 +186,7 @@ function App() {
             <h2>动画类型</h2>
             <span>{demos[demo].name}</span>
           </div>
-          <div className="stack buttons-stack">
+          <div className="stack buttons-stack big-list">
             {Object.entries(demos).map(([key, item]) => (
               <button
                 key={key}
@@ -184,9 +278,7 @@ function App() {
           </div>
 
           <div className={`stage ${showGrid ? 'with-grid' : ''}`}>
-            <div className={`preview-shape ${shape}`} style={previewStyle}>
-              <div className="inner-glow" />
-            </div>
+            {renderPreview()}
           </div>
         </section>
 
