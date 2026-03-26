@@ -84,9 +84,28 @@ h1 {
 .stage-header h2 { margin: 0; font-size: 18px; letter-spacing: -0.03em; }
 .panel-title span,
 .status-pill { color: #6b7280; font-size: 13px; }
+.stage-category {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 14px;
+}
 
 .stack { display: grid; gap: 10px; }
 .big-list { grid-template-columns: 1fr; }
+.category-stack {
+  display: grid;
+  gap: 16px;
+}
+.category-block {
+  display: grid;
+  gap: 10px;
+}
+.category-title {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
 
 .toggle {
   width: 100%;
